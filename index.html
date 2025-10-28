@@ -28,7 +28,6 @@
 </head>
 <body>
   <h1>Proficiency Level Idioms and Phrasal Verbs</h1>
-  <p class="intro">20 multiple-choice questions on phrasal verbs and idiomatic expressions (British English). Select an answer for each question; feedback appears immediately. The order of the questions is fixed; the order of the four answer choices for each question is randomised each time this page loads.</p>
 
   <form id="quiz" autocomplete="off" onsubmit="return false;">
     <!-- Questions 1-20 -->
@@ -201,6 +200,7 @@
 
   <script>
     (function () {
+      // Questions data: for each question element we will supply four choices (one correct).
       const questionsData = [
         {
           correct: "carry off",
@@ -310,7 +310,7 @@
           ],
           incorrectExplanations: {
             "LEAVE": "Incorrect. The idiom means to be firm, not to depart.",
-            "WALK CAREFULLY": "Incorrect. It is figurative, about asserting control.",
+            "WALK CAREFULLLY": "Incorrect. It is figurative, about asserting control.",
             "CHANGE MIND": "Incorrect. It means to be decisive, the opposite of changing one's mind."
           }
         },
