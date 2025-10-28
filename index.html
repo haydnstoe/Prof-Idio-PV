@@ -175,9 +175,10 @@
       <div class="feedback" aria-live="polite"></div>
     </div>
 
-    <div class="question" data-answer="TAKE SOMETHING WITH A PINCH OF SALT">
+    <!-- Replaced question 19: new idiom "call it a day" -->
+    <div class="question" data-answer="CALL IT A DAY">
       <div class="q-head">
-        <div><span class="q-num">19.</span> What does the idiom "take something with a pinch of salt" mean?</div>
+        <div><span class="q-num">19.</span> What does the idiom "call it a day" mean in: "After fixing the last bug, they decided to call it a day"?</div>
       </div>
       <div class="choices"></div>
       <div class="feedback" aria-live="polite"></div>
@@ -454,18 +455,19 @@
             "DELIVER": "Incorrect. The idiom is about perception, not delivery."
           }
         },
+        // Updated question 19 data: call it a day
         {
-          correct: "take something with a pinch of salt",
+          correct: "call it a day",
           choices: [
-            { text: "treat a claim sceptically or not completely believe it", key: "TAKE WITH A PINCH OF SALT" },
-            { text: "add flavour to food while cooking", key: "SEASON" },
-            { text: "accept something wholeheartedly", key: "ACCEPT" },
-            { text: "make a small sacrifice", key: "SACRIFICE" }
+            { text: "stop working for the day or finish an activity", key: "CALL IT A DAY" },
+            { text: "announce a formal decision", key: "ANNOUNCE" },
+            { text: "delay doing something until tomorrow", key: "DELAY" },
+            { text: "criticise someone's performance", key: "CRITICISE" }
           ],
           incorrectExplanations: {
-            "SEASON": "Incorrect. Although the phrase references salt, it idiomatically means to be sceptical.",
-            "ACCEPT": "Incorrect. It implies doubt rather than full acceptance.",
-            "SACRIFICE": "Incorrect. This is unrelated to the idiomatic meaning."
+            "ANNOUNCE": "Incorrect. The idiom means to stop or finish, not to make a formal announcement.",
+            "DELAY": "Incorrect. It doesn't specifically mean to postpone until tomorrow but to stop working now.",
+            "CRITICISE": "Incorrect. It is unrelated to criticism."
           }
         },
         {
@@ -484,10 +486,12 @@
         }
       ];
 
+      // For accessibility and uniqueness
       function uid(len = 8) {
         return Math.random().toString(36).slice(2, 2 + len);
       }
 
+      // Build choices into DOM and attach event handlers
       function build() {
         const questionElements = Array.from(document.querySelectorAll('.question'));
         questionElements.forEach((qEl, index) => {
@@ -496,12 +500,15 @@
           const feedbackEl = qEl.querySelector('.feedback');
           choicesContainer.innerHTML = '';
 
+          // Prepare choices array, copy to avoid mutation
           const choices = data.choices.map(c => ({ ...c }));
+          // Shuffle choices for this question
           for (let i = choices.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [choices[i], choices[j]] = [choices[j], choices[i]];
           }
 
+          // Unique name for radio group
           const groupName = 'q' + index + '_' + uid(6);
 
           choices.forEach((choice, iChoice) => {
@@ -524,6 +531,7 @@
             choicesContainer.appendChild(label);
 
             radio.addEventListener('change', function () {
+              // once selected, provide immediate feedback
               const selectedKey = this.value;
               const correctKey = data.correct.replace(/\s+/g, ' ').trim().toUpperCase();
               if (selectedKey.toUpperCase() === correctKey) {
@@ -533,14 +541,19 @@
               } else {
                 feedbackEl.className = 'feedback incorrect';
                 feedbackEl.style.display = 'block';
+                // Attempt to find an explanation based on selectedKey
                 const explanation = (data.incorrectExplanations && data.incorrectExplanations[selectedKey]) ? data.incorrectExplanations[selectedKey] : 'Incorrect.';
+                // Provide a short corrective explanation that includes the correct meaning
                 feedbackEl.textContent = explanation + ' The correct meaning here is: "' + data.correct.toLowerCase() + '".';
               }
+
+              // Disable further changes for this question after answering
               const radios = choicesContainer.querySelectorAll('input[type="radio"]');
               radios.forEach(r => r.disabled = true);
             });
           });
 
+          // Reset any prior feedback
           feedbackEl.style.display = 'none';
           feedbackEl.className = 'feedback';
           feedbackEl.textContent = '';
@@ -549,12 +562,15 @@
 
       document.addEventListener('DOMContentLoaded', function () {
         build();
+        // Reset button to reshuffle options without changing questions
         document.getElementById('resetBtn').addEventListener('click', function () {
+          // Clear all radio selections and feedback, then rebuild (which shuffles)
           const allRadios = document.querySelectorAll('input[type="radio"]');
           allRadios.forEach(r => { r.checked = false; r.disabled = false; });
           const feedbacks = document.querySelectorAll('.feedback');
           feedbacks.forEach(f => { f.style.display = 'none'; f.className = 'feedback'; f.textContent = ''; });
           build();
+          // Move focus to the top of the form for keyboard users
           document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
         });
       });
